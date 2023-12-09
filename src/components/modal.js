@@ -3,13 +3,9 @@
  * @param {*} popupElement попап
  */
 export function openModal(popupElement) {
-  const closeButton = popupElement.querySelector('.popup__close');
+  popupElement.classList.add('popup_is-opened');
 
-  switchClasses(popupElement);
-
-  closeButton.addEventListener('click', closePopupWithButton);
   document.addEventListener('keydown', closePopupWithEsc);
-  popupElement.addEventListener('mousedown', closePopupWithClickOutside);
 }
 
 /**
@@ -17,25 +13,16 @@ export function openModal(popupElement) {
  * @param {*} popupElement попап
  */
 export function closeModal(popupElement) {
-  switchClasses(popupElement);
+  popupElement.classList.remove('popup_is-opened');
 
-  removePopupEventListeners(popupElement);
-}
-
-/**
- * Функция переключения классов
- * @param {*} popupElement попап
- */
-function switchClasses(popupElement) {
-  popupElement.classList.toggle('popup_is-animated');
-  popupElement.classList.toggle('popup_is-opened');
+  document.removeEventListener('keydown', closePopupWithEsc);
 }
 
 /**
  * Функция закрытия попапа при помощи кнопки
  * @param {*} evt событие
  */
-function closePopupWithButton(evt) {
+export function closePopupWithButton(evt) {
   const popupElement = evt.target.closest('.popup_is-opened');
 
   closeModal(popupElement);
@@ -55,18 +42,6 @@ function closePopupWithEsc(evt) {
  * Функция закрытия попапа при помощи нажатия вне попапа
  * @param {*} evt событие
  */
-function closePopupWithClickOutside(evt) {
+export function closePopupWithClickOutside(evt) {
   if (evt.currentTarget === evt.target) closeModal(evt.target);
-}
-
-/**
- * Функция удаления слушателей попапа
- * @param {*} popupElement попап 
- */
-function removePopupEventListeners(popupElement) {
-  const closeButton = popupElement.querySelector('.popup__close');
-
-  closeButton.removeEventListener('click', closePopupWithButton);
-  document.removeEventListener('keydown', closePopupWithEsc);
-  popupElement.removeEventListener('mousedown', closePopupWithClickOutside);
 }
