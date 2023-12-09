@@ -1,7 +1,12 @@
 import './../pages/index.css'
 import initialCards from './cards.js'
-import { createCard, deleteCard, likeCard } from '../components/card.js';
-import { closeModal, openModal } from '../components/modal.js';
+import { createCard, deleteCard, likeCard } from './card.js';
+import {
+  closeModal,
+  openModal,
+  closePopupWithButton,
+  closePopupWithClickOutside
+} from './modal.js';
 
 // DOM узлы
 const cardsListElement = document.querySelector('.places__list');
@@ -9,14 +14,16 @@ const cardsListElement = document.querySelector('.places__list');
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
+const popups = document.querySelectorAll('.popup');
+
 const editProfilePopup = document.querySelector('.popup_type_edit');
 const addCardPopup = document.querySelector('.popup_type_new-card');
-const openFullImagePopup = document.querySelector('.popup_type_image');
+const fullImagePopup = document.querySelector('.popup_type_image');
 
 const editProfileButton = document.querySelector('.profile__edit-button');
 const addProfileButton = document.querySelector('.profile__add-button');
 
-const cardPopupImage = document.querySelector('.popup__image');
+const photoFullImagePopup = document.querySelector('.popup__image');
 const cardPopupImageName = document.querySelector('.popup__caption');
 
 const editProfileForm = document.forms['edit-profile'];
@@ -37,24 +44,28 @@ editProfileButton.addEventListener('click', () => {
   profilePopupName.value = profileName.textContent;
   profilePopupDescription.value = profileDescription.textContent;
 
-  editProfileForm.addEventListener('submit', editProfileHandler);
-
   openModal(editProfilePopup);
 });
 
-addProfileButton.addEventListener('click', () => {
-  addCardForm.addEventListener('submit', addCardHandler);
+addProfileButton.addEventListener('click', () => openModal(addCardPopup));
 
-  openModal(addCardPopup);
-});
+popups.forEach(el => {
+  const closeButton = el.querySelector('.popup__close');
+
+  el.addEventListener('mousedown', closePopupWithClickOutside);
+  closeButton.addEventListener('click', closePopupWithButton);
+})
+
+editProfileForm.addEventListener('submit', editProfileHandler);
+addCardForm.addEventListener('submit', addCardHandler);
 
 // Функции обработчики событий
 function openImageHandler(evt) {
-  cardPopupImage.src = evt.target.src;
-  cardPopupImage.alt = evt.target.alt;
+  photoFullImagePopup.src = evt.target.src;
+  photoFullImagePopup.alt = evt.target.alt;
   cardPopupImageName.textContent = evt.target.alt;
   
-  openModal(openFullImagePopup);
+  openModal(fullImagePopup);
 }
 
 function editProfileHandler(evt) {
@@ -65,7 +76,6 @@ function editProfileHandler(evt) {
 
   closeModal(editProfilePopup);
 
-  editProfileForm.removeEventListener('submit', editProfileHandler);
   editProfileForm.reset();
 }
 
@@ -79,7 +89,6 @@ function addCardHandler(evt) {
 
   renderCard(cardsListElement, newCardData);
 
-  addCardForm.removeEventListener('submit', addCardHandler);
   addCardForm.reset();
 
   closeModal(addCardPopup);
