@@ -7,6 +7,7 @@ import {
   closePopupWithButton,
   closePopupWithClickOutside
 } from './modal.js';
+import { enableValidation, clearValidation } from "./validation";
 
 // DOM узлы
 const cardsListElement = document.querySelector('.places__list');
@@ -34,6 +35,16 @@ const addCardForm = document.forms['new-place'];
 const cardPopupName = addCardForm.elements['place-name'];
 const cardPopupLink = addCardForm.elements.link;
 
+// Настройки валидации
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  // inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
+
 // Вывод карточки на страницу
 initialCards.forEach((card) => {
   renderCard(cardsListElement, card);
@@ -44,10 +55,16 @@ editProfileButton.addEventListener('click', () => {
   profilePopupName.value = profileName.textContent;
   profilePopupDescription.value = profileDescription.textContent;
 
+  clearValidation(editProfileForm, validationConfig);
+
   openModal(editProfilePopup);
 });
 
-addProfileButton.addEventListener('click', () => openModal(addCardPopup));
+addProfileButton.addEventListener('click', () => {
+  clearValidation(addCardForm, validationConfig);
+
+  openModal(addCardPopup);
+});
 
 popups.forEach(el => {
   const closeButton = el.querySelector('.popup__close');
@@ -91,6 +108,8 @@ function addCardHandler(evt) {
 
   addCardForm.reset();
 
+  clearValidation(addCardForm, validationConfig);
+
   closeModal(addCardPopup);
 }
 
@@ -103,3 +122,5 @@ function renderCard(rootElement, data) {
   const cardElement = createCard(data, deleteCard, openImageHandler, likeCard);
   rootElement.prepend(cardElement);
 }
+
+enableValidation(validationConfig);
