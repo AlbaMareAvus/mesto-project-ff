@@ -52,7 +52,7 @@ function removeCardFromScreen(element) {
 /**
  * Функция лайка карточки
  */
-export function likeCardHandle(likeButton, likeCard, cardId) {
+function likeCardHandle(likeButton, likeCard, cardId) {
   if (likeButton.classList.contains('card__like-button_is-active')) {
     likeCard(cardId, 'DELETE')
       .then(data => {
