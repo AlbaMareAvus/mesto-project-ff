@@ -26,27 +26,27 @@ const profileImage = document.querySelector('.profile__image');
 
 const popups = document.querySelectorAll('.popup');
 
-const editProfilePopup = document.querySelector('.popup_type_edit');
-const addCardPopup = document.querySelector('.popup_type_new-card');
+const profileEditPopup = document.querySelector('.popup_type_edit');
+const cardAddPopup = document.querySelector('.popup_type_new-card');
 const fullImagePopup = document.querySelector('.popup_type_image');
 
-const editProfileButton = document.querySelector('.profile__edit-button');
-const addProfileButton = document.querySelector('.profile__add-button');
+const profileEditButton = document.querySelector('.profile__edit-button');
+const profileAddButton = document.querySelector('.profile__add-button');
 
 const photoFullImagePopup = document.querySelector('.popup__image');
 const cardPopupImageName = document.querySelector('.popup__caption');
 
-const editProfileForm = document.forms['edit-profile'];
-const profilePopupName = editProfileForm.elements.name;
-const profilePopupDescription = editProfileForm.elements.description;
+const profileEditForm = document.forms['edit-profile'];
+const profilePopupName = profileEditForm.elements.name;
+const profilePopupDescription = profileEditForm.elements.description;
 
-const addCardForm = document.forms['new-place'];
-const cardPopupName = addCardForm.elements['place-name'];
-const cardPopupLink = addCardForm.elements.link;
+const cardAddForm = document.forms['new-place'];
+const cardPopupName = cardAddForm.elements['place-name'];
+const cardPopupLink = cardAddForm.elements.link;
 
-const editProfileAvatarForm = document.forms['edit-avatar'];
-const newAvatarUrl = editProfileAvatarForm.elements['new-avatar-link'];
-const editProfileAvatarPopup = document.querySelector('.popup_type_edit-avatar');
+const profileEditAvatarForm = document.forms['edit-avatar'];
+const newAvatarUrl = profileEditAvatarForm.elements['new-avatar-link'];
+const profileEditAvatarPopup = document.querySelector('.popup_type_edit-avatar');
 
 // Настройки валидации
 const validationConfig = {
@@ -60,37 +60,37 @@ const validationConfig = {
 let userId;
 
 // Слушатели событий
-editProfileButton.addEventListener('click', () => {
+profileEditButton.addEventListener('click', () => {
   profilePopupName.value = profileName.textContent;
   profilePopupDescription.value = profileDescription.textContent;
 
-  clearValidation(editProfileForm, validationConfig);
+  clearValidation(profileEditForm, validationConfig);
 
-  openModal(editProfilePopup);
+  openModal(profileEditPopup);
 });
 
-addProfileButton.addEventListener('click', () => {
-  clearValidation(addCardForm, validationConfig);
+profileAddButton.addEventListener('click', () => {
+  clearValidation(cardAddForm, validationConfig);
 
-  openModal(addCardPopup);
+  openModal(cardAddPopup);
 });
 
 popups.forEach(el => {
-  const closeButton = el.querySelector('.popup__close');
+  const buttonClosePopup = el.querySelector('.popup__close');
 
   el.addEventListener('mousedown', closePopupWithClickOutside);
-  closeButton.addEventListener('click', closePopupWithButton);
+  buttonClosePopup.addEventListener('click', closePopupWithButton);
 })
 
 profileImage.addEventListener('click', () => {
-  clearValidation(editProfileAvatarPopup, validationConfig);
+  clearValidation(profileEditAvatarPopup, validationConfig);
 
-  openModal(editProfileAvatarPopup);
+  openModal(profileEditAvatarPopup);
 });
 
-editProfileForm.addEventListener('submit', editProfileHandler);
-addCardForm.addEventListener('submit', addCardHandler);
-editProfileAvatarForm.addEventListener('submit', changeAvatarHandle);
+profileEditForm.addEventListener('submit', editProfileHandler);
+cardAddForm.addEventListener('submit', addCardHandler);
+profileEditAvatarForm.addEventListener('submit', changeAvatarHandle);
 
 // Функции обработчики событий
 function openImageHandler(evt) {
@@ -101,9 +101,9 @@ function openImageHandler(evt) {
   openModal(fullImagePopup);
 }
 
-async function editProfileHandler(evt) {
+function editProfileHandler(evt) {
   evt.preventDefault();
-  whileLoading(true, editProfilePopup.querySelector('.popup__button'));
+  whileLoading(true, profileEditPopup.querySelector('.popup__button'));
 
   updateUserData({
     name: profilePopupName.value,
@@ -112,18 +112,18 @@ async function editProfileHandler(evt) {
     profileName.textContent = userData.name;
     profileDescription.textContent = userData.about;
 
-    closeModal(editProfilePopup);
+    closeModal(profileEditPopup);
 
-    editProfileForm.reset();
+    profileEditForm.reset();
   }).catch(err => console.error(err))
     .finally(() => {
-      whileLoading(false, editProfilePopup.querySelector('.popup__button'));
+      whileLoading(false, profileEditPopup.querySelector('.popup__button'));
     });
 }
 
 function addCardHandler(evt) {
   evt.preventDefault();
-  whileLoading(true, addCardPopup.querySelector('.popup__button'));
+  whileLoading(true, cardAddPopup.querySelector('.popup__button'));
 
   addNewCard({
     name: cardPopupName.value,
@@ -131,29 +131,29 @@ function addCardHandler(evt) {
   }).then(card => {
     renderCard(cardsListElement, card);
 
-    addCardForm.reset();
+    cardAddForm.reset();
 
-    closeModal(addCardPopup);
+    closeModal(cardAddPopup);
   }).catch(err => console.error(err))
     .finally(() => {
-      whileLoading(false, addCardPopup.querySelector('.popup__button'));
+      whileLoading(false, cardAddPopup.querySelector('.popup__button'));
     });
 }
 
 function changeAvatarHandle(evt) {
   evt.preventDefault();
-  whileLoading(true, editProfileAvatarPopup.querySelector('.popup__button'));
+  whileLoading(true, profileEditAvatarPopup.querySelector('.popup__button'));
 
   updateUserAvatar(newAvatarUrl.value)
     .then(data => {
       profileImage.style.backgroundImage = `url(${data.avatar})`;
 
-      editProfileAvatarForm.reset();
+      profileEditAvatarForm.reset();
 
-      closeModal(editProfileAvatarPopup);
+      closeModal(profileEditAvatarPopup);
     }).catch(err => console.error(err))
       .finally(() => {
-        whileLoading(false, editProfileAvatarPopup.querySelector('.popup__button'));
+        whileLoading(false, profileEditAvatarPopup.querySelector('.popup__button'));
       });
 }
 

@@ -33,9 +33,11 @@ export function closePopupWithButton(evt) {
  * @param {*} evt событие
  */
 function closePopupWithEsc(evt) {
-  const popupElement = evt.currentTarget.querySelector('.popup_is-opened');
-
-  if (evt.key === 'Escape') closeModal(popupElement);
+  if (evt.key === 'Escape') {
+    const popupElement = evt.currentTarget.querySelector('.popup_is-opened');
+    
+    closeModal(popupElement);
+  }
 }
 
 /**
